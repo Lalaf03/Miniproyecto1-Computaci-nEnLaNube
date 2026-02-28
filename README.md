@@ -12,7 +12,6 @@ Permite gestionar usuarios, productos y órdenes mediante servicios independient
 - Consul (Service Discovery)
 - Frontend web (HTML, CSS, JS)
 
----
 
 ## 🏗️ Arquitectura
 
@@ -28,7 +27,6 @@ El sistema está compuesto por los siguientes servicios:
 
 Cada microservicio posee su propia base de datos independiente.
 
----
 
 ## ⚙️ Requisitos
 
@@ -63,16 +61,14 @@ cd <NOMBRE_DEL_PROYECTO>
 docker compose up --build -d
 ```
 
----
 
 ## 🌐 Acceso
 
 - Frontend: http://localhost:5001
 - Consul: http://localhost:8500
 
----
 
-###🛑 Detener el sistema
+### 🛑 Detener el sistema
 
 ```bash
 docker compose down
@@ -88,7 +84,6 @@ Cada servicio se ejecuta en su propio contenedor Docker con:
 - Dependencias aisladas  
 - Comunicación interna por nombre de servicio
 
----
 
 ## 🔎 Service Discovery
 
