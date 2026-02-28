@@ -1,0 +1,122 @@
+version: "3.9"
+
+services:
+  consul:
+    image: consul:1.15.4
+    container_name: consul-server
+    command: agent -server -ui -node=server-1 -bootstrap-expect=1 -client=0.0.0.0
+    ports:
+      - "8500:8500"
+
+  # ===== MYSQL USERS =====
+  mysql-users:
+    image: mysql:8.0
+    container_name: mysql-users
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: usersdb
+    ports:
+      - "3308:3306"
+    volumes:
+      - users-data:/var/lib/mysql
+      - ./init-users.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # ===== MYSQL PRODUCTS =====
+  mysql-products:
+    image: mysql:8.0
+    container_name: mysql-products
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: productosdb
+    ports:
+      - "3307:3306"
+    volumes:
+      - products-data:/var/lib/mysql
+      - ./init-products.sql:/docker-entrypoint-initdb.d/init.sql
+
+  # ===== MYSQL ORDENES =====
+  mysql-orders:
+    image: mysql:8.0
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: ordenesdb
+    ports:
+      - "3306:3306"
+    volumes:
+      - orders-data:/var/lib/mysql
+      - ./init-orders.sql:/docker-entrypoint-initdb.d/init.sql
+    healthcheck:
+      test: ["CMD", "mysqladmin", "ping", "-h", "localhost"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+
+  microproducts:
+    build: ./microProducts
+    ports:
+      - "5003:5003"
+    environment:
+      CONSUL_HOST: consul
+      SERVICE_NAME: products-service
+      SERVICE_PORT: 5003
+      SERVICE_HOST: microproducts
+      MYSQL_HOST: mysql-products
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: productosdb
+    depends_on:
+      - consul
+      - mysql-products
+
+  microusers:
+    build: ./microUsers
+    ports:
+      - "5002:5002"
+    environment:
+      CONSUL_HOST: consul
+      SERVICE_NAME: users-service
+      SERVICE_PORT: 5002
+      SERVICE_HOST: microusers
+      MYSQL_HOST: mysql-users
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: myflaskapp
+    depends_on:
+      - consul
+      - mysql-users
+
+  microorders:
+    build: ./microOrders
+    ports:
+      - "5004:5004"
+    environment:
+      CONSUL_HOST: consul
+      SERVICE_NAME: orders-service
+      SERVICE_PORT: 5004
+      SERVICE_HOST: microorders
+      MYSQL_HOST: mysql-orders
+      MYSQL_USER: root
+      MYSQL_PASSWORD: root
+      MYSQL_DB: ordenesdb
+    depends_on:
+      mysql-orders:
+        condition: service_healthy
+
+  frontend:
+    build: ./frontend
+    ports:
+      - "5001:5001"
+    environment:
+      CONSUL_HOST: consul
+      SERVICE_NAME: front-service
+      SERVICE_PORT: 5001
+      SERVICE_HOST: frontend
+    depends_on:
+      - consul
+      - microusers
+      - microproducts
+
+volumes:
+  users-data:
+  products-data:
+  orders-data:

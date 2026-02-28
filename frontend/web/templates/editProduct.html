@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Edit Product</title>
+
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+    />
+
+    <style>
+      body {
+        padding-top: 70px;
+      }
+    </style>
+  </head>
+
+  <body>
+    <!-- NAVBAR -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-dark fixed-top">
+      <a class="navbar-brand" href="/">Mini Store</a>
+    </nav>
+
+    <!-- CONTENIDO -->
+    <div class="container">
+      <h2 class="mt-4">Edit Product</h2>
+
+      <div class="card mt-3">
+        <div class="card-body">
+          <form>
+            <!-- ID oculto -->
+            <input type="hidden" id="producto-id" />
+
+            <div class="form-group">
+              <label for="nombre">Product Name</label>
+              <input type="text" class="form-control" id="nombre" required />
+            </div>
+
+            <div class="form-group">
+              <label for="precio">Price</label>
+              <input type="number" class="form-control" id="precio" required />
+            </div>
+
+            <div class="form-group">
+              <label for="stock">Stock</label>
+              <input type="number" class="form-control" id="stock" required />
+            </div>
+
+            <button
+              type="button"
+              class="btn btn-primary"
+              onclick="updateProducto()"
+            >
+              Update Product
+            </button>
+
+            <a href="/" class="btn btn-secondary ml-2">Cancel</a>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- SCRIPT GENERAL -->
+    <script src="/static/scriptProduct.js"></script>
+
+    <!-- SCRIPT PARA CARGAR PRODUCTO -->
+    <script>
+      const productoId = window.location.pathname.split("/").pop();
+      document.getElementById("producto-id").value = productoId;
+
+      fetch(`http://192.168.100.3:5003/api/productos/${productoId}`)
+        .then((response) => response.json())
+        .then((producto) => {
+          document.getElementById("nombre").value = producto.nombre;
+          document.getElementById("precio").value = producto.precio;
+          document.getElementById("stock").value = producto.stock;
+        })
+        .catch((error) => console.error("Error:", error));
+    </script>
+  </body>
+</html>
