@@ -43,6 +43,7 @@ Puedes verificarlo con:
 ```bash
 docker --version
 docker compose version
+```bash
 
 No es necesario instalar dependencias adicionales.
 
