@@ -3,7 +3,6 @@
 Este proyecto es una aplicación de tienda online construida con arquitectura de microservicios.  
 Permite gestionar usuarios, productos y órdenes mediante servicios independientes que se comunican entre sí.
 
----
 
 ## 🚀 Tecnologías utilizadas
 
@@ -43,7 +42,7 @@ Puedes verificarlo con:
 ```bash
 docker --version
 docker compose version
-```bash
+```
 
 No es necesario instalar dependencias adicionales.
 
@@ -56,11 +55,13 @@ No es necesario instalar dependencias adicionales.
 ```bash
 git clone <URL_DEL_REPOSITORIO>
 cd <NOMBRE_DEL_PROYECTO>
+```
 
 ### 2️⃣ Iniciar todos los servicios
 
 ```bash
 docker compose up --build -d
+```
 
 ---
 
@@ -75,6 +76,7 @@ docker compose up --build -d
 
 ```bash
 docker compose down
+```
 
 ---
 
